@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light" />
+    <title>Journey to the West - 章节题目打印</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css?v=20260709-6" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="章节选择">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">J</div>
+          <div>
+            <p class="eyebrow">QUIZ LIBRARY</p>
+            <h1>Journey to the West</h1>
+          </div>
+        </div>
+
+        <label class="search-box">
+          <svg aria-hidden="true" viewBox="0 0 24 24">
+            <path d="m21 21-4.35-4.35m2.35-5.15a7.5 7.5 0 1 1-15 0 7.5 7.5 0 0 1 15 0Z" />
+          </svg>
+          <span class="sr-only">搜索章节</span>
+          <input id="chapter-search" type="search" placeholder="搜索章节或编号" autocomplete="off" />
+          <kbd>/</kbd>
+        </label>
+
+        <div class="chapter-summary">
+          <span>全部章节</span>
+          <span id="chapter-count">0</span>
+        </div>
+        <div class="batch-tools" aria-label="批量打印选择">
+          <span id="selected-count">已选 0</span>
+          <button id="select-visible" class="mini-button" type="button">全选</button>
+          <button id="clear-selected" class="mini-button" type="button">清空</button>
+        </div>
+        <nav id="chapter-list" class="chapter-list" aria-label="章节列表"></nav>
+      </aside>
+
+      <main class="workspace">
+        <header class="toolbar">
+          <button id="sidebar-toggle" class="icon-button mobile-only" type="button" aria-label="打开章节列表">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+          </button>
+
+          <div class="toolbar-title">
+            <p class="eyebrow">WORKSHEET PREVIEW</p>
+            <h2 id="toolbar-chapter-title">正在载入题库...</h2>
+          </div>
+
+          <div class="toolbar-actions">
+            <button id="previous-chapter" class="icon-button" type="button" aria-label="上一章" title="上一章">
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg>
+            </button>
+            <button id="next-chapter" class="icon-button" type="button" aria-label="下一章" title="下一章">
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg>
+            </button>
+          </div>
+        </header>
+
+        <section class="control-panel" aria-label="打印设置">
+          <div class="control-group">
+            <div class="control-copy">
+              <span class="control-label">打印版本</span>
+              <span class="control-hint">教师版会附答案页</span>
+            </div>
+            <div class="segmented-control" role="radiogroup" aria-label="打印版本">
+              <label>
+                <input type="radio" name="worksheet-copy" value="student" checked />
+                <span>学生版</span>
+              </label>
+              <label>
+                <input type="radio" name="worksheet-copy" value="teacher" />
+                <span>教师版</span>
+              </label>
+            </div>
+          </div>
+          <div class="control-group date-control-group">
+            <div class="control-copy">
+              <span class="control-label">日期</span>
+              <span class="control-hint">自动填入日期</span>
+            </div>
+            <label class="toggle-control">
+              <input id="show-date" type="checkbox" checked />
+              <span aria-hidden="true"></span>
+              显示日期
+            </label>
+          </div>
+          <div class="control-group option-order-group">
+            <div class="control-copy">
+              <span class="control-label">选项排列</span>
+              <span class="control-hint">随机模式会重新标记 A、B、C</span>
+            </div>
+            <div class="segmented-control" role="radiogroup" aria-label="选项排列方式">
+              <label>
+                <input type="radio" name="option-order" value="original" />
+                <span>保持原顺序</span>
+              </label>
+              <label>
+                <input type="radio" name="option-order" value="random" checked />
+                <span>随机排列</span>
+              </label>
+            </div>
+          </div>
+          <button id="reshuffle" class="secondary-button" type="button">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5" /></svg>
+            重新随机
+          </button>
+          <button id="batch-print-button" class="secondary-button" type="button">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M8 7V3h10v6M6 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-1M6 14h12v7H6zM6 3h7" /></svg>
+            打印所选
+          </button>
+          <button id="print-button" class="primary-button" type="button">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 9V3h10v6M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2M7 14h10v7H7z" /></svg>
+            打印本章
+          </button>
+        </section>
+
+        <section class="preview-area">
+          <article id="worksheet" class="worksheet" aria-live="polite">
+            <div class="loading-state">
+              <div class="loading-spinner"></div>
+              <p>正在读取题库</p>
+            </div>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <div id="mobile-backdrop" class="mobile-backdrop" hidden></div>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script src="app.js?v=20260709-6" defer></script>
+  </body>
+</html>
